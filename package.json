@@ -7,14 +7,24 @@
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "mongodb": "^6.16.0",
     "mongoose": "^8.15.1",
     "morgan": "^1.10.0",
     "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@types/express": "^5.0.2",
     "@types/node": "^22.15.24",
-    "@types/passport": "^1.0.17"
+    "@types/passport": "^1.0.17",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "dev": "ts-node src/index.ts"
   }
 }

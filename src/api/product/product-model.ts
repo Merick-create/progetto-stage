@@ -4,7 +4,9 @@ import { ProductEntity } from "./product-entity";
 const ProductSchema=new Schema<ProductEntity>({
     name:{type:String,required:true},
     price:{type:Number,required:true},
-    
+    description:{type:String,required:true},
+    quantity:{type:Number,required:true},
+    img:{type:String,required:true},
 });
 ProductSchema.set('toJSON',{
     virtuals:true,
@@ -15,4 +17,4 @@ ProductSchema.set('toJSON',{
     }
 });
 
-export const AllenamentiModel=model('allenamenti',AllenamentiSchema);  
+export const ProductModel=model('Products',ProductSchema);  
