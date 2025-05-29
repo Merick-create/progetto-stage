@@ -13,15 +13,26 @@ export async function getProdotti(): Promise < ProductEntity[] > {
     return await ProductModel.find().populate('_id').exec();
 }
 
-export async function getProductByName(query:OptionalDTO): Promise < ProductEntity[] > {
+export async function getProductByName(query: OptionalDTO): Promise<ProductEntity[]> {
+  const { name } = query;
 
-    const prodotti = await ProductModel.find({
-        name: [{ nome: { $exists: true } },
-        { name: { $ne: null } },
-        { name: { $ne: "" } }]
-    });
-    return prodotti;
+  if (!name) return [];
+
+  const prodotti = await ProductModel.find({
+    name: {
+      $regex: name,
+      $options: "i"
+    },
+    $and: [
+      { name: { $exists: true } },
+      { name: { $ne: null } },
+      { name: { $ne: "" } }
+    ]
+  });
+
+  return prodotti;
 }
+
 
 export async function GetById(id:Types.ObjectId):Promise<ProductEntity|null> {
     return ProductModel.findById(id);

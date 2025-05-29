@@ -1,13 +1,13 @@
-import { model, Schema } from "mongoose";
-import { CartEntity } from "./cart-entity";
+import { model, Schema,Types } from "mongoose";
+import { CartItem } from "./cart-entity";
 
-const cartSchema= new Schema<CartEntity>({
-    product:String,
-    quantity:Number,
-    userId:String,
-})
+const cartItemSchema = new Schema<CartItem>({
+    quantity: Number,
+    product: { type: Types.ObjectId, ref: 'Products' },
+    user: { type: Schema.Types.ObjectId, ref: 'User' } 
+});
 
-cartSchema.set('toJSON', {
+cartItemSchema.set('toJSON', {
     virtuals: true,
     transform: (_, ret) => {
         delete ret._id;
@@ -17,4 +17,4 @@ cartSchema.set('toJSON', {
     }
 });
 
-export const CartModel=model<CartEntity>('CartModel',cartSchema);
+export const CartItemModel = model<CartItem>('CartItem', cartItemSchema);

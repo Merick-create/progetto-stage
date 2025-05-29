@@ -1,28 +1,30 @@
-import { CartEntity } from "./cart-entity";
-import {CartModel} from "./cart-model";
+import { Types } from "mongoose";
+import { CartItem } from "./cart-entity";
+import { CartItemModel } from "./cart-model";
 
-export async function addToCart(data: CartEntity): Promise<CartEntity> {
-    const existing = await CartModel.findOne({ product: data.product, user: data.userId });
+export async function addToCart(data: CartItem): Promise<CartItem> {
+    const existing = await CartItemModel.findOne({ product: data.product, user: data.user });
     if (!!existing) {
         existing.quantity += data.quantity;
         await existing.save();
         return existing.populate('product');
     }
-    const newItem = await CartModel.create(data);
+    const newItem = await CartItemModel.create(data);
     await newItem.populate('product');
-    return newItem;
+    return newItem;
 }
 
-export async function getCart(userId: string): Promise<CartEntity[]> {
-    return CartModel.find({ user: userId }).populate('product');
+
+export async function getCart(userId: string): Promise<CartItem[]> {
+    return CartItemModel.find({ user: userId }).populate('product');
 }
 
-export async function update(id: string, data: Partial<CartEntity>, userId: string): Promise<CartEntity | null> {
-    const updated = await CartModel.findOneAndUpdate({ _id: id, user: userId }, data, {new: true}).populate('product');
+export async function update(id: string, data: Partial<CartItem>, userId: string): Promise<CartItem | null> {
+    const updated = await CartItemModel.findOneAndUpdate({ _id: new Types.ObjectId(id), user: userId }, data, {new: true}).populate('product');
 
     return updated;
 }
 
-export async function removeFromCart(id: string, userId: string): Promise<CartEntity | null> {
-    return CartModel.findOneAndDelete({ _id: id, user: userId });
+export async function removeFromCart(id: string, userId: string): Promise<CartItem | null> {
+    return CartItemModel.findOneAndDelete({ _id: new Types.ObjectId(id), user: userId });
 }

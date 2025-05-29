@@ -26,16 +26,16 @@ export const get = async (
 ) => {
   try {
     const id = request.params['id'];
-    const atleta = await GetById(new Types.ObjectId(id));
+    const prodotto = await GetById(new Types.ObjectId(id));
 
-    if (!atleta) {
-       response.status(404).json({ error: 'Atleta non trovato' });
+    if (!prodotto) {
+       response.status(404).json({ error: 'prodotto non trovato' });
     }
 
-    response.json(atleta);
+    response.json(prodotto);
   } catch (err) {
     console.error(err);
-    response.status(500).json({ error: 'Errore durante il recupero dell\'atleta' });
+    response.status(500).json({ error: 'Errore durante il recupero del prodotto' });
   }
 };
 
