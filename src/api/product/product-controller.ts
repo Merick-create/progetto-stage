@@ -45,9 +45,10 @@ export const add = async (
   next: NextFunction
 ) => {
   try {
-    const { name, price, description, quantity, img } = request.body;
+    const { id_categoria, name, price, description, quantity, img } = request.body;
 
     const nuovoProdotto: ProductEntity = {
+      id_categoria,
       name,
       price,
       description,

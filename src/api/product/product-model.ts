@@ -2,6 +2,7 @@ import { Schema,Types,Mongoose, model } from "mongoose";
 import { ProductEntity } from "./product-entity";
 
 const ProductSchema=new Schema<ProductEntity>({
+    id_categoria:{type:Schema.Types.ObjectId,ref:'Categories',require:true},
     name:{type:String,required:true},
     price:{type:Number,required:true},
     description:{type:String,required:true},

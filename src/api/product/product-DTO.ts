@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsMongoId, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import {Types} from 'mongoose';
 
 export class ProductDto{
@@ -9,6 +9,9 @@ export class ProductDto{
     price:number;
 }
 export class AddProductDTO{
+    @IsMongoId()
+    id_categoria;
+
     @IsString()
     @IsNotEmpty()
     name:string;

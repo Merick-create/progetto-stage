@@ -4,7 +4,7 @@ import { OptionalDTO, ProductDto } from './product-DTO';
 import { Types } from 'mongoose';
 
 export type QueryProduct= ProductDto;
-export async function creaprodotto(data: { name, price, description, quantity, img }): Promise < ProductEntity > {
+export async function creaprodotto(data: { id_categoria,name, price, description, quantity, img }): Promise < ProductEntity > {
     const prodotto = new ProductModel(data);
     return await prodotto.save();
 }
