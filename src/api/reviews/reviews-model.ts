@@ -2,13 +2,14 @@ import { Schema,Types,model, } from "mongoose";
 import { ReviewsEntity } from "./reviews-entity";
 
 
-const ReviewsSchema=new Schema<ReviewsEntity>({
-    user_id:{type:Schema.Types.ObjectId,ref:'User',require:true},
-    product_id:{type:Schema.Types.ObjectId,ref:'Products',required:true},
-    rating:{type:Number,require:true},
-    content:{type:String,require:true},
-    created_at:{type:Date,require:true}
-})  
+const ReviewsSchema = new Schema<ReviewsEntity>({
+  user_id: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  product_id: { type: Schema.Types.ObjectId, ref: 'Products', required: true },
+  rating: { type: Number, required: true, min: 1, max: 5 },
+  content: { type: String },
+  created_at: { type: Date, default: Date.now },
+});
+
 
 ReviewsSchema.set('toJSON',{
     virtuals:true,

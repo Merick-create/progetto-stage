@@ -2,7 +2,7 @@ import { model, Schema, Types } from "mongoose";
 import { checkoutEntity } from "./checkout-entity";
 
 const checkoutSchema = new Schema<checkoutEntity>({
-  userId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, required: true },
   obj: [{
     productId: { type: Types.ObjectId, required: true, ref: 'Products' },
     quantity: { type: Number, required: true },

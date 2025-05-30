@@ -4,6 +4,7 @@ import {createReview,getAllReviews,getReviewById,updateReview,deleteReview} from
 import { AddReviewsDTO, DeleteReviewsDTO, UpdateReviewsDTO } from './reviews-DTO';
 import { ReviewsEntity } from './reviews-entity';
 import { TypedRequest } from '../../lib/typed-request.interface';
+import { User } from '../user/user.entity';
 
 export const getReviewsList = async (
   req: Request,
@@ -11,13 +12,20 @@ export const getReviewsList = async (
   next: NextFunction
 ) => {
   try {
-    const reviews = await getAllReviews();
+    const productId = req.params.productid;
+    if (!Types.ObjectId.isValid(productId)) {
+      res.status(400).json({ error: 'ID prodotto non valido' });
+    }
+
+    const reviews = await getAllReviews(new Types.ObjectId(productId));
+    console.log(reviews)
     res.json(reviews);
   } catch (err) {
-    console.error(err);
+    console.error('Errore getReviewsList:', err);
     res.status(500).json({ error: 'Errore durante il recupero delle recensioni' });
   }
 };
+
 
 export const getReview = async (
   req: Request,
@@ -45,7 +53,23 @@ export const addReview = async (
   next: NextFunction
 ) => {
   try {
-    const reviewData: AddReviewsDTO = req.body;
+    const productId = req.params.productid;
+    const { rating, content } = req.body;
+    const user_id = (req.user as User).id!;
+
+    // Validazione del rating
+    if (rating < 1 || rating > 5) {
+      res.status(400).json({ error: 'Il rating deve essere tra 1 e 5' });
+    }
+
+    const reviewData: AddReviewsDTO = {
+      user_id: new Types.ObjectId(user_id),
+      product_id: new Types.ObjectId(productId),
+      rating,
+      content,
+      created_at: new Date(), // Imposta la data corrente
+    };
+
     const review = await createReview(reviewData);
     res.status(201).json(review);
   } catch (err) {
@@ -54,16 +78,39 @@ export const addReview = async (
   }
 };
 
+
+
 export const patchReviewHandler = async (
   req: TypedRequest<UpdateReviewsDTO>,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const updated = await updateReview(req.body);
+    const id = req.params.id;
+    const user_id = (req.user as User).id!;
+    const { rating, content, created_at } = req.body;
+
+    // Validazioni
+    if (!Types.ObjectId.isValid(id) ) {
+      res.status(400).json({ error: 'ID non valido' });
+    }
+
+    if (rating < 1 || rating > 5) {
+      res.status(400).json({ error: 'Il rating deve essere tra 1 e 5' });
+    }
+
+    const updateDto: UpdateReviewsDTO = {
+      id: new Types.ObjectId(id),
+      user_id: new Types.ObjectId(user_id),
+      rating,
+      content,
+      created_at,
+    };
+
+    const updated = await updateReview(updateDto);
 
     if (!updated) {
-     res.status(404).json({ error: 'Recensione non trovata o non autorizzato' });
+      res.status(404).json({ error: 'Recensione non trovata o non autorizzato' });
     }
 
     res.json(updated);
@@ -73,13 +120,32 @@ export const patchReviewHandler = async (
   }
 };
 
+
+
 export const deleteReviewHandler = async (
-  req: TypedRequest<DeleteReviewsDTO>,
+  req: TypedRequest<Partial<DeleteReviewsDTO>>, // id sarà in params, non nel body
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const deleted = await deleteReview(req.body);
+    const id = req.params.id;
+    const user_id = (req.user as User).id!;
+
+    // Validazione ID
+    if (!Types.ObjectId.isValid(id)) {
+      res.status(400).json({ error: 'ID non valido' });
+    }
+
+    const deleteDto: DeleteReviewsDTO = {
+      id: new Types.ObjectId(id),
+      user_id: new Types.ObjectId(user_id),
+    };
+
+    const deleted = await deleteReview(deleteDto);
+    if (!deleted) {
+      res.status(404).json({ error: 'Recensione non trovata o non autorizzato' });
+    }
+
     res.json({ deleted });
   } catch (err) {
     console.error(err);

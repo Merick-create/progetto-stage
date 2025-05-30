@@ -4,12 +4,12 @@ import { CartItemModel } from "../cart/cart-model";
 import { ProductModel } from "../product/product-model";
 import { Types } from "mongoose";
 
-export async function getCheckOut(userId: string): Promise<checkoutEntity| null> {
+export async function getCheckOut(userId: Types.ObjectId): Promise<checkoutEntity| null> {
     return await CheckoutModel.findOne({ userId }).lean({ virtuals: true });
 }
 
 
-export async function createCheckout(userId: string): Promise<checkoutEntity | null> {
+export async function createCheckout(userId: Types.ObjectId): Promise<checkoutEntity | null> {
   const cartItems = await CartItemModel.find({
     user: new Types.ObjectId(userId)
   }).lean();

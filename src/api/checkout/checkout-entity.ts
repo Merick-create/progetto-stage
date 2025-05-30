@@ -1,6 +1,6 @@
 import {Types} from "mongoose"
 export type checkoutEntity={
-    userId:string;
+    userId:Types.ObjectId,
     obj:[{
         productId:Types.ObjectId,
         quantity:number,
