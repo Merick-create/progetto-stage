@@ -4,9 +4,11 @@ import { CartItemModel } from "../cart/cart-model";
 import { ProductModel } from "../product/product-model";
 import { Types } from "mongoose";
 
-export async function getCheckOut(userId: Types.ObjectId): Promise<checkoutEntity| null> {
-    return await CheckoutModel.findOne({ userId }).lean({ virtuals: true });
+export async function getCheckOut(userId: Types.ObjectId): Promise<checkoutEntity | null> {
+  const checkout = await CheckoutModel.findOne({ userId });
+  return checkout ? checkout.toObject({ virtuals: true }) : null;
 }
+
 
 
 export async function createCheckout(userId: Types.ObjectId): Promise<checkoutEntity | null> {
