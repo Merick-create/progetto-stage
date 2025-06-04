@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import { getlist,add,getByname,get } from '../product/product-controller';
+import { getlist,add,getByname,get, updateQuantity } from '../product/product-controller';
 import { isAuthenticated } from '../../lib/auth/auth.middleware';
 import reviewsRouter from '../reviews/reviews-router';
 const router=Router();
@@ -10,7 +10,7 @@ router.get('/lista',getlist);
 router.get('/getByname',getByname);
 router.get('/get/:id',get);
 router.post('/add',add);
+router.patch('/update-quantity', updateQuantity);
 router.use('/:productid/reviews', isAuthenticated, reviewsRouter);
-
 
 export default router;

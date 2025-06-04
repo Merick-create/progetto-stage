@@ -8,18 +8,18 @@ import { NotFoundError } from '../../errors/not-found.error';
 import { User } from '../user/user.entity';
 import { Types } from 'mongoose';
 
-
 export const add = async (
     req: TypedRequest<AddCartItemDTO>, 
     res: Response, 
-    next: NextFunction) => {
+    next: NextFunction
+) => {
     try {
         const { productId, quantity } = req.body;
         const userId = (req.user as User).id!;
 
         const product = await GetById(new Types.ObjectId(productId));
         if (!product) {
-            throw new Error('Not Found');
+            throw new Error('Prodotto non trovato');
         }
 
         const toAdd: CartItem = {
@@ -30,13 +30,11 @@ export const add = async (
         
         const added = await addToCart(toAdd);
 
-        res.status(201);
-        res.json(added);
+        res.status(201).json(added);
     } catch (err: any) {
-        next(err);
+        res.status(400).json({ error: err.message || 'Errore nel carrello' });
     }
 }
-
 
 export const list = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -52,7 +50,8 @@ export const list = async (req: Request, res: Response, next: NextFunction) => {
 export const updateQuantity = async (
     req: TypedRequest<UpdateCartQuantityDTO>,
     res: Response,
-    next: NextFunction) => {
+    next: NextFunction
+) => {
     try {
         const { id } = req.params;
         const { quantity } = req.body;
@@ -64,14 +63,15 @@ export const updateQuantity = async (
         }
         res.json(updated);
     } catch(err: any) {
-        next(err);
+        res.status(400).json({ error: err.message || 'Errore aggiornamento quantità' });
     }
 }
 
 export const remove = async (
     req: Request,
     res: Response,
-    next: NextFunction) => {
+    next: NextFunction
+) => {
     try {
         const { id } = req.params;
         const userId = (req.user as User).id!;
