@@ -38,3 +38,14 @@ export async function GetById(id:Types.ObjectId):Promise<ProductEntity|null> {
     return ProductModel.findById(id);
 }
 
+export async function updateProductQuantity(
+  id: Types.ObjectId,
+  quantity: number
+): Promise<ProductEntity | null> {
+  return ProductModel.findByIdAndUpdate(
+    id,
+    { $set: { quantity } },
+    { new: true }
+  );
+}
+

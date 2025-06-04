@@ -1,9 +1,9 @@
-  import {Response,Request,NextFunction} from 'express';
-  import {creaprodotto,getProdotti,getProductByName,GetById} from './product-service';
-  import { ProductDto,AddProductDTO, OptionalDTO } from './product-DTO';
-  import { TypedRequest } from '../../lib/typed-request.interface';
-  import { Types } from 'mongoose';
-  import { ProductEntity } from './product-entity';
+import {Response,Request,NextFunction} from 'express';
+import {creaprodotto,getProdotti,getProductByName,GetById, updateProductQuantity} from './product-service';
+import { ProductDto,AddProductDTO, OptionalDTO } from './product-DTO';
+import { TypedRequest } from '../../lib/typed-request.interface';
+import { Types } from 'mongoose';
+import { ProductEntity } from './product-entity';
 
   export const getlist = async (
     request: Request,
@@ -79,3 +79,28 @@
     }
   };
 
+
+export const updateQuantity = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const { id, quantity } = request.body;
+
+    if (!id || typeof quantity !== 'number') {
+      response.status(400).json({ error: 'ID o quantità non validi' });
+    }
+
+    const updatedProduct = await updateProductQuantity(new Types.ObjectId(id), quantity);
+
+    if (!updatedProduct) {
+      response.status(404).json({ error: 'Prodotto non trovato' });
+    }
+
+    response.json(updatedProduct);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: 'Errore durante l\'aggiornamento della quantità' });
+  }
+};
