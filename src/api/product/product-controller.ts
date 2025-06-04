@@ -1,5 +1,5 @@
 import {Response,Request,NextFunction} from 'express';
-import {creaprodotto,getProdotti,getProductByName,GetById, updateProductQuantity} from './product-service';
+import {creaprodotto,getProdotti,getProductByName,GetById, updateProductQuantity,getProductsByCategory} from './product-service';
 import { ProductDto,AddProductDTO, OptionalDTO } from './product-DTO';
 import { TypedRequest } from '../../lib/typed-request.interface';
 import { Types } from 'mongoose';
@@ -104,3 +104,29 @@ export const updateQuantity = async (
     response.status(500).json({ error: 'Errore durante l\'aggiornamento della quantità' });
   }
 };
+
+export const getByCategory = async (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => {
+  try {
+    const { categoryId } = request.params;
+
+    if (!categoryId) {
+      response.status(400).json({ error: 'ID categoria mancante o non valido' });
+    }
+
+    const products = await getProductsByCategory(categoryId);
+
+    if (!products || products.length === 0) {
+      response.status(404).json({ error: 'Nessun prodotto trovato per questa categoria' });
+    }
+
+     response.json(products);
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: 'Errore durante il recupero dei prodotti per categoria' });
+  }
+};
+

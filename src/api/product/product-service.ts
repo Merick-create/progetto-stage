@@ -49,3 +49,7 @@ export async function updateProductQuantity(
   );
 }
 
+export async function getProductsByCategory(categoryId: string): Promise<ProductEntity[]> {
+  return await ProductModel.find({ id_categoria: categoryId }).exec();
+}
+
