@@ -12,6 +12,6 @@ router.get('/get/:id',get);
 router.post('/add',add);
 router.patch('/update-quantity', updateQuantity);
 router.get('/products/:categoryId', getByCategory);
-router.use('/:productid/reviews', isAuthenticated, reviewsRouter);
+router.use('/:id/reviews', isAuthenticated, reviewsRouter);
 
 export default router;
