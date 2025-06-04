@@ -57,7 +57,6 @@ export const addReview = async (
     const { rating, content } = req.body;
     const user_id = (req.user as User).id!;
 
-    // Validazione del rating
     if (rating < 1 || rating > 5) {
       res.status(400).json({ error: 'Il rating deve essere tra 1 e 5' });
     }
@@ -67,9 +66,8 @@ export const addReview = async (
       product_id: new Types.ObjectId(productId),
       rating,
       content,
-      created_at: new Date(), // Imposta la data corrente
+      created_at: new Date(),
     };
-
     const review = await createReview(reviewData);
     res.status(201).json(review);
   } catch (err) {
