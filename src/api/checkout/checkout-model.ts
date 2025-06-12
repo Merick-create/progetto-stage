@@ -17,5 +17,4 @@ checkoutSchema.virtual("totalPrice").get(function (this: checkoutEntity) {
   return this.obj.reduce((sum, item) => sum + item.price * item.quantity, 0);
 });
 
-
 export const CheckoutModel = model("Checkout", checkoutSchema);
