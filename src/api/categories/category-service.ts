@@ -2,7 +2,7 @@ import { CategoryEntity } from './category-entity';
 import { CategoryModel } from './category-model';
 import { Types } from 'mongoose';
 
-export async function creaCategoria(data: { name: string }): Promise<CategoryEntity> {
+export async function creaCategoria(data: { name: string,img:string }): Promise<CategoryEntity> {
   const categoria = new CategoryModel(data);
   return await categoria.save();
 }

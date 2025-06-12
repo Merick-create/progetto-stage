@@ -40,16 +40,17 @@ export const getCategory = async (
 };
 
 export const addCategory = async (
-  request: TypedRequest<{ name: string }>,
+  request: TypedRequest<{ name: string, img:string }>,
   response: Response,
   next: NextFunction
 ) => {
   try {
-    const { name } = request.body;
+    const { name,img } = request.body;
 
     const nuovaCategoria: CategoryEntity = {
       id: new Types.ObjectId(),
       name,
+      img
     };
 
     const categoriaCreata = await creaCategoria(nuovaCategoria);

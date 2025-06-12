@@ -1,5 +1,5 @@
 import {Response,Request,NextFunction} from 'express';
-import {creaprodotto,getProdotti,getProductByName,GetById, updateProductQuantity,getProductsByCategory} from './product-service';
+import {creaprodotto,getProdotti,getProductByName,GetById, updateProductQuantity,getProductsByCategory, getFilteredProducts} from './product-service';
 import { ProductDto,AddProductDTO, OptionalDTO } from './product-DTO';
 import { TypedRequest } from '../../lib/typed-request.interface';
 import { Types } from 'mongoose';
@@ -127,6 +127,19 @@ export const getByCategory = async (
   } catch (err) {
     console.error(err);
     response.status(500).json({ error: 'Errore durante il recupero dei prodotti per categoria' });
+  }
+};
+
+export const getFiltered = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    res.status(200).json(await getFilteredProducts(req.query));
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Errore nel recupero prodotti filtrati" });
   }
 };
 

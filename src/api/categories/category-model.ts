@@ -2,7 +2,8 @@ import {Schema,model,Types}from 'mongoose';
 import { CategoryEntity } from './category-entity';
 
 export const CategorySchema=new Schema<CategoryEntity>({
-    name:{type:String,require:true}
+    name:{type:String,require:true},
+    img:{type:String,require:true}
 })
 
 CategorySchema.set('toJSON',{
