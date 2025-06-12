@@ -1,4 +1,4 @@
-import { UserExistsError } from "../../errors/UserExists";
+import { UserExistsError } from "../../errors/UserExists";  
 import { UserIdentityModel } from "../../lib/auth/local/user-identity.model";
 import { User } from "./user.entity";
 import { UserModel } from "./user.model";
@@ -30,15 +30,30 @@ export class UserService {
     async getUsersByRole(role?: string): Promise<User[]> {
         const normalizedRole = role?.trim().toLowerCase();
         if (normalizedRole && !['student', 'teacher'].includes(normalizedRole)) {
-            throw new Error('Invalid role');
+            throw new Error('Ruolo non valido');
         }
         const query = normalizedRole ? { role: normalizedRole } : { role: { $in: ['student', 'teacher'] } };
         
         try {
             return await UserModel.find(query);
         } catch (error) {
-            console.error('Error fetching users by role:', error);
-            throw new Error('Failed to fetch users');
+            console.error('Errore durante il recupero degli utenti per ruolo:', error);
+            throw new Error('Impossibile recuperare gli utenti');
+        }
+    }
+
+    async updateUser(userId: string, updates: Partial<User>): Promise<User | null> {
+        try {
+            
+            if (updates.picture && typeof updates.picture !== 'string') {
+                throw new Error('Formato URL immagine non valido.');
+            }
+
+            const updatedUser = await UserModel.findByIdAndUpdate(userId, updates, { new: true, runValidators: true });
+            return updatedUser;
+        } catch (error) {
+            console.error('Errore durante l\'aggiornamento dell\'utente:', error);
+            throw new Error(`Impossibile aggiornare l'utente: ${error instanceof Error ? error.message : 'Errore sconosciuto'}`);
         }
     }
 }

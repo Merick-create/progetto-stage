@@ -57,15 +57,15 @@ export async function destroyCheckout(userId: Types.ObjectId): Promise<checkoutE
 
 
 export async function confirmCheckout(userId: Types.ObjectId): Promise<checkoutEntity> {
-  // Prova a trovare un checkout esistente (es. da Buy Now)
+  
   const existingCheckout = await CheckoutModel.findOne({ userId });
 
   if (existingCheckout) {
-    // Conferma checkout già esistente (e.g., creato da buyNow)
+
     return existingCheckout.toObject({ virtuals: true });
   }
 
-  // Fallback: genera checkout dai dati nel carrello
+
   const cartItems = await CartItemModel.find({ user: userId }).lean();
   if (cartItems.length === 0) throw new Error("Carrello vuoto");
 
@@ -111,7 +111,6 @@ export async function buyNowCheckout(userId: Types.ObjectId, productId: Types.Ob
     throw new Error(`Quantità insufficiente per il prodotto ${product.name}`);
   }
 
-  // Sottrai la quantità dal magazzino
   product.quantity -= quantity;
   await product.save();
 
@@ -121,7 +120,6 @@ export async function buyNowCheckout(userId: Types.ObjectId, productId: Types.Ob
     price: product.price,
   };
 
-  // Rimuove un eventuale checkout precedente
   await CheckoutModel.findOneAndDelete({ userId });
 
   const checkout = new CheckoutModel({

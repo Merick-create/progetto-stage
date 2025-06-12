@@ -88,7 +88,7 @@ export const patchReviewHandler = async (
     const user_id = (req.user as User).id!;
     const { rating, content, created_at } = req.body;
 
-    // Validazioni
+
     if (!Types.ObjectId.isValid(id) ) {
       res.status(400).json({ error: 'ID non valido' });
     }
@@ -121,7 +121,7 @@ export const patchReviewHandler = async (
 
 
 export const deleteReviewHandler = async (
-  req: TypedRequest<Partial<DeleteReviewsDTO>>, // id sarà in params, non nel body
+  req: TypedRequest<Partial<DeleteReviewsDTO>>, 
   res: Response,
   next: NextFunction
 ) => {
@@ -129,7 +129,6 @@ export const deleteReviewHandler = async (
     const id = req.params.id;
     const user_id = (req.user as User).id!;
 
-    // Validazione ID
     if (!Types.ObjectId.isValid(id)) {
       res.status(400).json({ error: 'ID non valido' });
     }
