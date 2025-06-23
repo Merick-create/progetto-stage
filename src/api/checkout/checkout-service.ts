@@ -61,8 +61,8 @@ export async function confirmCheckout(userId: Types.ObjectId): Promise<checkoutE
   const existingCheckout = await CheckoutModel.findOne({ userId });
 
   if (existingCheckout) {
-
-    return existingCheckout.toObject({ virtuals: true });
+    console.log('Checkout già esistente, lo elimino...');
+    await CheckoutModel.findOneAndDelete({ userId });
   }
 
 
@@ -96,7 +96,9 @@ export async function confirmCheckout(userId: Types.ObjectId): Promise<checkoutE
   });
 
   await newCheckout.save();
-  await CartItemModel.deleteMany({ user: userId });
+  console.log("Eliminazione articoli carrello per user:", userId);
+  const result = await CartItemModel.deleteMany({ user: userId });
+  console.log("Cart delete result:", result);
 
   return newCheckout.toObject({ virtuals: true });
 }
