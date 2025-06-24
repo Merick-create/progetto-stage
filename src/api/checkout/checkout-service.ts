@@ -64,9 +64,8 @@ export async function confirmCartCheckout(userId: Types.ObjectId): Promise<check
   try {
     // 1. Verifica se esiste già un checkout (potrebbe essere stato creato da Buy Now)
     const existingCheckout = await CheckoutModel.findOne({ userId }).session(session);
-    
+
     if (existingCheckout) {
-      // Se esiste, confermalo direttamente senza bisogno del carrello
       const checkoutItems = existingCheckout.obj;
 
       // Aggiorna le quantità dei prodotti
@@ -79,8 +78,9 @@ export async function confirmCartCheckout(userId: Types.ObjectId): Promise<check
         await product.save({ session });
       }
 
-      // Elimina il checkout dopo la conferma (se vuoi mantenerlo, salta questo passaggio)
+      // ✅ Elimina il checkout e gli articoli nel carrello
       await CheckoutModel.findByIdAndDelete(existingCheckout._id).session(session);
+      await CartItemModel.deleteMany({ user: userId }).session(session); // ✅ Aggiunto
 
       await session.commitTransaction();
       session.endSession();
@@ -131,6 +131,7 @@ export async function confirmCartCheckout(userId: Types.ObjectId): Promise<check
     throw err;
   }
 }
+
 
 
 export async function buyNowCheckout(userId: Types.ObjectId, productId: Types.ObjectId, quantity: number): Promise<checkoutEntity> {
